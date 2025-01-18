@@ -16,24 +16,8 @@ class Statement {
         val format = NumberFormat.getCurrencyInstance(Locale.US)
 
         invoice.performances.forEach { perf ->
-            val play = plays[perf.playId]
-            var thisAmount = 0
-            when (play?.type) {
-                "tragedy" -> {
-                    thisAmount = 40000
-                    if (perf.audience > 30) {
-                        thisAmount += 1000 * (perf.audience - 30)
-                    }
-                }
-                "comedy" -> {
-                    thisAmount = 30000
-                    if (perf.audience > 20) {
-                        thisAmount += 1000 + 500 * (perf.audience - 20)
-                    }
-                    thisAmount += 300 * perf.audience
-                }
-                else -> throw IllegalArgumentException("알 수 없는 장르: ${play?.type}")
-            }
+            val play = plays[perf.playId]!!
+            val thisAmount = amountFor(play, perf)
 
             volumeCredits += maxOf(perf.audience - 30, 0)
 
@@ -47,5 +31,28 @@ class Statement {
         result += "총액: ${format.format(totalAmount / 100.0)}\n"
         result += "적립 포인트: ${volumeCredits}점\n"
         return result
+    }
+
+    private fun amountFor(play: Play, perf: Performance): Int {
+        var thisAmount = 0
+        when (play.type) {
+            "tragedy" -> {
+                thisAmount = 40000
+                if (perf.audience > 30) {
+                    thisAmount += 1000 * (perf.audience - 30)
+                }
+            }
+
+            "comedy" -> {
+                thisAmount = 30000
+                if (perf.audience > 20) {
+                    thisAmount += 1000 + 500 * (perf.audience - 20)
+                }
+                thisAmount += 300 * perf.audience
+            }
+
+            else -> throw IllegalArgumentException("알 수 없는 장르: ${play.type}")
+        }
+        return thisAmount
     }
 }
