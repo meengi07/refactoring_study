@@ -32,22 +32,22 @@ class Statement {
         return result
     }
 
-    private fun amountFor(play: Play, perf: Performance): Int {
+    private fun amountFor(play: Play, aPerformance: Performance): Int {
         var result = 0
         when (play.type) {
             "tragedy" -> {
                 result = 40000
-                if (perf.audience > 30) {
-                    result += 1000 * (perf.audience - 30)
+                if (aPerformance.audience > 30) {
+                    result += 1000 * (aPerformance.audience - 30)
                 }
             }
 
             "comedy" -> {
                 result = 30000
-                if (perf.audience > 20) {
-                    result += 1000 + 500 * (perf.audience - 20)
+                if (aPerformance.audience > 20) {
+                    result += 1000 + 500 * (aPerformance.audience - 20)
                 }
-                result += 300 * perf.audience
+                result += 300 * aPerformance.audience
             }
 
             else -> throw IllegalArgumentException("알 수 없는 장르: ${play.type}")
