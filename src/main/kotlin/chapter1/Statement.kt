@@ -46,7 +46,7 @@ class Statement {
             return result
         }
 
-        fun totalVolumeCredits(invoice: Invoice): Int {
+        fun totalVolumeCredits(): Int {
             var volumeCredits = 0
             invoice.performances.forEach { aPerformance ->
                 volumeCredits += volumeCreditsFor(aPerformance)
@@ -68,9 +68,8 @@ class Statement {
             totalAmount += amountFor(aPerformance)
         }
 
-        val volumeCredits = totalVolumeCredits(invoice)
         result += "총액: ${usd(totalAmount)}\n"
-        result += "적립 포인트: ${volumeCredits}점\n"
+        result += "적립 포인트: ${totalVolumeCredits()}점\n"
         return result
     }
 
