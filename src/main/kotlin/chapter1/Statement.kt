@@ -42,15 +42,13 @@ class Statement {
         val format = NumberFormat.getCurrencyInstance(Locale.US)
 
         invoice.performances.forEach { aPerformance ->
-            val thisAmount = amountFor(aPerformance)
-
             volumeCredits += maxOf(aPerformance.audience - 30, 0)
 
             if ("comedy" == playFor(aPerformance).type) {
                 volumeCredits += aPerformance.audience / 5
             }
-            result += "${playFor(aPerformance).name}: ${format.format(thisAmount / 100.0)} (${aPerformance.audience} 석)\n"
-            totalAmount += thisAmount
+            result += "${playFor(aPerformance).name}: ${format.format(amountFor(aPerformance) / 100.0)} (${aPerformance.audience} 석)\n"
+            totalAmount += amountFor(aPerformance)
         }
 
         result += "총액: ${format.format(totalAmount / 100.0)}\n"
