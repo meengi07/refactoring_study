@@ -36,17 +36,24 @@ class Statement {
             return result
         }
 
+        fun volumeCreditsFor(aPerformance: Performance): Int {
+            var result = 0
+            result += maxOf(aPerformance.audience - 30, 0)
+
+            if ("comedy" == playFor(aPerformance).type) {
+                result += aPerformance.audience / 5
+            }
+            return result
+        }
+
         var totalAmount = 0
         var volumeCredits = 0
         var result = "청구 내역 (고객명: ${invoice.customer})\n"
         val format = NumberFormat.getCurrencyInstance(Locale.US)
 
         invoice.performances.forEach { aPerformance ->
-            volumeCredits += maxOf(aPerformance.audience - 30, 0)
+            volumeCredits += volumeCreditsFor(aPerformance)
 
-            if ("comedy" == playFor(aPerformance).type) {
-                volumeCredits += aPerformance.audience / 5
-            }
             result += "${playFor(aPerformance).name}: ${format.format(amountFor(aPerformance) / 100.0)} (${aPerformance.audience} 석)\n"
             totalAmount += amountFor(aPerformance)
         }
