@@ -47,11 +47,11 @@ class Statement {
         }
 
         fun totalVolumeCredits(): Int {
-            var volumeCredits = 0
+            var result = 0
             invoice.performances.forEach { aPerformance ->
-                volumeCredits += volumeCreditsFor(aPerformance)
+                result += volumeCreditsFor(aPerformance)
             }
-            return volumeCredits
+            return result
         }
 
         fun usd(aNumber: Int): String {
@@ -60,11 +60,11 @@ class Statement {
         }
 
         fun totalAmount(): Int {
-            var totalAmount = 0
+            var result = 0
             invoice.performances.forEach { aPerformance ->
-                totalAmount += amountFor(aPerformance)
+                result += amountFor(aPerformance)
             }
-            return totalAmount
+            return result
         }
 
         var result = "청구 내역 (고객명: ${invoice.customer})\n"
