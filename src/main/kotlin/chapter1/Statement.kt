@@ -59,16 +59,21 @@ class Statement {
             return format.format(aNumber / 100.0)
         }
 
-        var totalAmount = 0
-        var result = "청구 내역 (고객명: ${invoice.customer})\n"
+        fun totalAmount(): Int {
+            var totalAmount = 0
+            invoice.performances.forEach { aPerformance ->
+                totalAmount += amountFor(aPerformance)
+            }
+            return totalAmount
+        }
 
+        var result = "청구 내역 (고객명: ${invoice.customer})\n"
 
         invoice.performances.forEach { aPerformance ->
             result += "${playFor(aPerformance).name}: ${usd(amountFor(aPerformance) )} (${aPerformance.audience} 석)\n"
-            totalAmount += amountFor(aPerformance)
         }
 
-        result += "총액: ${usd(totalAmount)}\n"
+        result += "총액: ${usd(totalAmount())}\n"
         result += "적립 포인트: ${totalVolumeCredits()}점\n"
         return result
     }
