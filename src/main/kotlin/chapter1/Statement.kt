@@ -67,16 +67,22 @@ class Statement {
             return result
         }
 
-        var result = "청구 내역 (고객명: ${invoice.customer})\n"
+        fun renderPlainText(invoice: Invoice): String {
+            var result = "청구 내역 (고객명: ${invoice.customer})\n"
 
-        invoice.performances.forEach { aPerformance ->
-            result += "${playFor(aPerformance).name}: ${usd(amountFor(aPerformance) )} (${aPerformance.audience} 석)\n"
+            invoice.performances.forEach { aPerformance ->
+                result += "${playFor(aPerformance).name}: ${usd(amountFor(aPerformance))} (${aPerformance.audience} 석)\n"
+            }
+
+            result += "총액: ${usd(totalAmount())}\n"
+            result += "적립 포인트: ${totalVolumeCredits()}점\n"
+            return result
         }
 
-        result += "총액: ${usd(totalAmount())}\n"
-        result += "적립 포인트: ${totalVolumeCredits()}점\n"
-        return result
+        return renderPlainText(invoice)
     }
+
+
 
 
 }
