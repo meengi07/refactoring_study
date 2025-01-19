@@ -9,21 +9,24 @@ class Statement {
         invoice: Invoice,
         plays: Map<String, Play>
     ): String {
+        fun playFor(aPerformance: Performance): Play {
+            return plays[aPerformance.playId]!!
+        }
+
         var totalAmount = 0
         var volumeCredits = 0
         var result = "청구 내역 (고객명: ${invoice.customer})\n"
         val format = NumberFormat.getCurrencyInstance(Locale.US)
 
         invoice.performances.forEach { perf ->
-            val play = plays[perf.playId]!!
-            val thisAmount = amountFor(play, perf)
+            val thisAmount = amountFor(playFor(perf), perf)
 
             volumeCredits += maxOf(perf.audience - 30, 0)
 
-            if ("comedy" == play.type) {
+            if ("comedy" == playFor(perf).type) {
                 volumeCredits += perf.audience / 5
             }
-            result += "${play.name}: ${format.format(thisAmount / 100.0)} (${perf.audience} 석)\n"
+            result += "${playFor(perf).name}: ${format.format(thisAmount / 100.0)} (${perf.audience} 석)\n"
             totalAmount += thisAmount
         }
 
