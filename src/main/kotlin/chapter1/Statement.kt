@@ -13,20 +13,43 @@ class Statement {
             return plays[aPerformance.playId]!!
         }
 
+        fun amountFor(aPerformance: Performance): Int {
+            var result = 0
+            when (playFor(aPerformance).type) {
+                "tragedy" -> {
+                    result = 40000
+                    if (aPerformance.audience > 30) {
+                        result += 1000 * (aPerformance.audience - 30)
+                    }
+                }
+
+                "comedy" -> {
+                    result = 30000
+                    if (aPerformance.audience > 20) {
+                        result += 1000 + 500 * (aPerformance.audience - 20)
+                    }
+                    result += 300 * aPerformance.audience
+                }
+
+                else -> throw IllegalArgumentException("알 수 없는 장르: ${playFor(aPerformance).type}")
+            }
+            return result
+        }
+
         var totalAmount = 0
         var volumeCredits = 0
         var result = "청구 내역 (고객명: ${invoice.customer})\n"
         val format = NumberFormat.getCurrencyInstance(Locale.US)
 
-        invoice.performances.forEach { perf ->
-            val thisAmount = amountFor(playFor(perf), perf)
+        invoice.performances.forEach { aPerformance ->
+            val thisAmount = amountFor(aPerformance)
 
-            volumeCredits += maxOf(perf.audience - 30, 0)
+            volumeCredits += maxOf(aPerformance.audience - 30, 0)
 
-            if ("comedy" == playFor(perf).type) {
-                volumeCredits += perf.audience / 5
+            if ("comedy" == playFor(aPerformance).type) {
+                volumeCredits += aPerformance.audience / 5
             }
-            result += "${playFor(perf).name}: ${format.format(thisAmount / 100.0)} (${perf.audience} 석)\n"
+            result += "${playFor(aPerformance).name}: ${format.format(thisAmount / 100.0)} (${aPerformance.audience} 석)\n"
             totalAmount += thisAmount
         }
 
@@ -35,26 +58,5 @@ class Statement {
         return result
     }
 
-    private fun amountFor(play: Play, aPerformance: Performance): Int {
-        var result = 0
-        when (play.type) {
-            "tragedy" -> {
-                result = 40000
-                if (aPerformance.audience > 30) {
-                    result += 1000 * (aPerformance.audience - 30)
-                }
-            }
 
-            "comedy" -> {
-                result = 30000
-                if (aPerformance.audience > 20) {
-                    result += 1000 + 500 * (aPerformance.audience - 20)
-                }
-                result += 300 * aPerformance.audience
-            }
-
-            else -> throw IllegalArgumentException("알 수 없는 장르: ${play.type}")
-        }
-        return result
-    }
 }
